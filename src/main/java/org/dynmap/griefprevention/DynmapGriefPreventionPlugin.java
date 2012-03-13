@@ -33,7 +33,9 @@ import org.dynmap.markers.MarkerSet;
 public class DynmapGriefPreventionPlugin extends JavaPlugin {
     private static final Logger log = Logger.getLogger("Minecraft");
     private static final String LOG_PREFIX = "[Dynmap-GriefPrevention] ";
-    private static final String DEF_INFOWINDOW = "<div class=\"infowindow\">Owner: <span style=\"font-weight:bold;\">%owner%</span><br/>Managers: <span style=\"font-weight:bold;\">%managers%</span><br/>Builders: <span style=\"font-weight:bold;\">%builders%</span><br/>Containers: <span style=\"font-weight:bold;\">%containers%</span><br/>Accessors: <span style=\"font-weight:bold;\">%accessors%</span></div>";
+    private static final String DEF_INFOWINDOW = "div class=\"infowindow\">Claim Owner: <span style=\"font-weight:bold;\">%owner%</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>";
+    private static final String DEF_ADMININFOWINDOW = "<div class=\"infowindow\"><span style=\"font-weight:bold;\">Administrator Claim</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>";
+    private static final String ADMIN_ID = "administrator";
     Plugin dynmap;
     DynmapAPI api;
     MarkerAPI markerapi;
@@ -44,6 +46,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
     long updperiod;
     boolean use3d;
     String infowindow;
+    String admininfowindow;
     AreaStyle defstyle;
     Map<String, AreaStyle> ownerstyle;
     Set<String> visible;
@@ -94,10 +97,13 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
     private Map<String, AreaMarker> resareas = new HashMap<String, AreaMarker>();
 
     private String formatInfoWindow(Claim claim, AreaMarker m) {
-        String v = "<div class=\"regioninfo\">"+infowindow+"</div>";
-        v = v.replace("%owner%", claim.getOwnerName());
+        String v;
+        if(claim.isAdminClaim())
+            v = "<div class=\"regioninfo\">"+admininfowindow+"</div>";
+        else
+            v = "<div class=\"regioninfo\">"+infowindow+"</div>";
+        v = v.replace("%owner%", claim.isAdminClaim()?ADMIN_ID:claim.getOwnerName());
         v = v.replace("%area%", Integer.toString(claim.getArea()));
-        v = v.replace("%isadmin%", Boolean.toString(claim.isAdminClaim()));
         ArrayList<String> builders = new ArrayList<String>();
         ArrayList<String> containers = new ArrayList<String>();
         ArrayList<String> accessors = new ArrayList<String>();
@@ -153,7 +159,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         AreaStyle as = null;
         
         if(!ownerstyle.isEmpty()) {
-            as = ownerstyle.get(owner);
+            as = ownerstyle.get(owner.toLowerCase());
         }
         if(as == null)
             as = defstyle;
@@ -181,9 +187,9 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         if(l0 == null)
             return;
         String wname = l0.getWorld().getName();
-        String owner = claim.getOwnerName();
+        String owner = claim.isAdminClaim()?ADMIN_ID:claim.getOwnerName();
         /* Handle areas */
-        if(isVisible(claim.getOwnerName(), wname)) { 
+        if(isVisible(owner, wname)) { 
             /* Make outline */
             x = new double[4];
             z = new double[4];
@@ -329,6 +335,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         set.setHideByDefault(cfg.getBoolean("layer.hidebydefault", false));
         use3d = cfg.getBoolean("use3dregions", false);
         infowindow = cfg.getString("infowindow", DEF_INFOWINDOW);
+        admininfowindow = cfg.getString("adminclaiminfowindow", DEF_ADMININFOWINDOW);
         maxdepth = cfg.getInt("maxdepth", 16);
 
         /* Get style information */

@@ -17,7 +17,11 @@ layer:
 use3dregions: false
 
 # Format for popup - substitute values for macros
-infowindow: '<div class=\"infowindow\">Owner: <span style=\"font-weight:bold;\">%owner%</span><br/>Managers: <span style=\"font-weight:bold;\">%managers%</span><br/>Builders: <span style=\"font-weight:bold;\">%builders%</span><br/>Containers: <span style=\"font-weight:bold;\">%containers%</span><br/>Accessors: <span style=\"font-weight:bold;\">%accessors%</span></div>'
+# 
+infowindow: '<div class=\"infowindow\">Claim Owner: <span style=\"font-weight:bold;\">%owner%</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>'
+
+adminclaiminfowindow: '<div class=\"infowindow\"><span style=\"font-weight:bold;\">Administrator Claim</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>'
+
 
 regionstyle:
   strokeColor: "#FF0000"
@@ -28,16 +32,17 @@ regionstyle:
   
 # Optional list for defining the claims to be shown.  If list is non-empty, only claims matching one of the list strings are shown:
 # Values can include '<username>' (claims owned by given user), 'world:<worldid>' (all claims on a specific world),
-# '<worldid>/<username>' (claims owned by a given user on a given world)
+# '<worldid>/<username>' (claims owned by a given user on a given world).  Administrator claims are owned by 'administrator'.
 visibleregions: [ ]
   
 # Optional list for restricting the claims shown.  If list is non-empty, any claims matching one of the list strings are not shown:
 # Values can include '<username>' (claims owned by given user), 'world:<worldid>' (all claims on a specific world),
-# '<worldid>/<username>' (claims owned by a given user on a given world)
+# '<worldid>/<username>' (claims owned by a given user on a given world).  Administrator claims are owned by 'administrator'.
 hiddenregions: [ ]
 
-# Optional per-owner overrides for regionstyle
+# Optional per-owner overrides for regionstyle (Administrator claims are owned by 'administrator')
 ownerstyle:
-  kingoftheworld:
-    strokeColor: "#C0C0C0"
+  administrator:
+    strokeColor: "#0000FF"
+    fillColor: "#0000FF"
     
