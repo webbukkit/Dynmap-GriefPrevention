@@ -1,0 +1,6 @@
+name: Dynmap-GriefPrevention
+main: org.dynmap.griefprevention.DynmapGriefPreventionPlugin
+version: "${project.version}"
+author: mikeprimm
+depend: [ dynmap, GriefPrevention ]
+
