@@ -1,5 +1,6 @@
 package org.dynmap.griefprevention;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -304,8 +305,15 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         /* If both enabled, activate */
         if(dynmap.isEnabled() && gp.isEnabled())
             activate();
+        
+        try {
+            MetricsLite ml = new MetricsLite(this);
+            ml.start();
+        } catch (IOException iox) {
+        }
     }
-
+    private boolean reload = false;
+    
     private void activate() {
         /* Now, get markers API */
         markerapi = api.getMarkerAPI();
@@ -314,6 +322,17 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
             return;
         }
         /* Load configuration */
+        if(reload) {
+            reloadConfig();
+            if(set != null) {
+                set.deleteMarkerSet();
+                set = null;
+            }
+            resareas.clear();
+        }
+        else {
+            reload = true;
+        }
         FileConfiguration cfg = getConfig();
         cfg.options().copyDefaults(true);   /* Load defaults, if needed */
         this.saveConfig();  /* Save updates, if needed */
