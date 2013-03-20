@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
+import me.ryanhamshire.GriefPrevention.ClaimArray;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -236,7 +237,16 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         try {
             Field fld = DataStore.class.getDeclaredField("claims");
             fld.setAccessible(true);
-            claims = (ArrayList<Claim>)fld.get(ds);
+            Object o = fld.get(ds);
+            if(o instanceof ArrayList) {
+                claims = (ArrayList<Claim>)o;
+            }
+            else {
+                ClaimArray  ca = (ClaimArray)o;
+                claims = new ArrayList<Claim>();
+                for(int i = 0; i < ca.size(); i++)
+                    claims.add(ca.get(i));
+            }
         } catch (NoSuchFieldException e) {
         } catch (IllegalArgumentException e) {
         } catch (IllegalAccessException e) {
