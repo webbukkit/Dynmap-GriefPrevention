@@ -33,8 +33,7 @@ import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 
 public class DynmapGriefPreventionPlugin extends JavaPlugin {
-    private static final Logger log = Logger.getLogger("Minecraft");
-    private static final String LOG_PREFIX = "[Dynmap-GriefPrevention] ";
+    private static Logger log;
     private static final String DEF_INFOWINDOW = "div class=\"infowindow\">Claim Owner: <span style=\"font-weight:bold;\">%owner%</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>";
     private static final String DEF_ADMININFOWINDOW = "<div class=\"infowindow\"><span style=\"font-weight:bold;\">Administrator Claim</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>";
     private static final String ADMIN_ID = "administrator";
@@ -55,6 +54,11 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
     Set<String> hidden;
     boolean stop; 
     int maxdepth;
+
+    @Override
+    public void onLoad() {
+        log = this.getLogger();
+    }
     
     private static class AreaStyle {
         String strokecolor;
@@ -83,10 +87,10 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
     }
     
     public static void info(String msg) {
-        log.log(Level.INFO, LOG_PREFIX + msg);
+        log.log(Level.INFO, msg);
     }
     public static void severe(String msg) {
-        log.log(Level.SEVERE, LOG_PREFIX + msg);
+        log.log(Level.SEVERE, msg);
     }
 
     private class GriefPreventionUpdate implements Runnable {
