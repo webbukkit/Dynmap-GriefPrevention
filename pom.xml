@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.dynmap</groupId>
   <artifactId>Dynmap-GriefPrevention</artifactId>
-  <version>0.70</version>
+  <version>0.60</version>
   
     <build>
   	  <resources>
@@ -34,31 +34,7 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-  		<plugin>
-  			<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-    				<descriptors>
-        				<descriptor>src/main/assembly/package.xml</descriptor>
-    				</descriptors>
-					<!-- Hack for bug in maven-assembly: http://jira.codehaus.org/browse/MASSEMBLY-449 -->
-					<archiverConfig>
-						<fileMode>420</fileMode> <!-- 420(dec) = 644(oct) -->
-						<directoryMode>493</directoryMode> <!-- 493(dec) = 755(oct) -->
-						<defaultDirectoryMode>493</defaultDirectoryMode>
-					</archiverConfig>
-				</configuration>
-  			
-  			<executions>
-  				<execution>
-  					<id>build</id>
-  					<phase>package</phase>
-  					<goals>
-  						<goal>single</goal>
-  					</goals>
-  				</execution>
-  			</executions>
-  		</plugin>
-  	</plugins>
+   	</plugins>
   </build>
        <repositories>
 		<repository>
