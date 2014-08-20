@@ -64,14 +64,14 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.6.4-R1.0</version>
+  		<version>1.7.9-R0.2</version>
   	</dependency>
   	<dependency>
   		<groupId>me.ryanhamshire</groupId>
   		<artifactId>GriefPrevention</artifactId>
-  		<version>7.8-B282</version>
+  		<version>7.8-B295</version>
   		<scope>system</scope>
-  		<systemPath>${project.basedir}/GriefPrevention-282.jar</systemPath>
+  		<systemPath>${project.basedir}/GriefPrevention-295.jar</systemPath>
   	</dependency>
   </dependencies>
 </project>

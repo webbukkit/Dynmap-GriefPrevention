@@ -17,7 +17,6 @@ import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.ClaimArray;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
@@ -285,7 +284,6 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
     }
 
     private class OurServerListener implements Listener {
-        @SuppressWarnings("unused")
         @EventHandler(priority=EventPriority.MONITOR)
         public void onPluginEnable(PluginEnableEvent event) {
             Plugin p = event.getPlugin();
