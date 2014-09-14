@@ -15,6 +15,13 @@ import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import me.ryanhamshire.GriefPrevention.ClaimArray;
+import me.ryanhamshire.GriefPrevention.events.ClaimAfterCreateEvent;
+import me.ryanhamshire.GriefPrevention.events.ClaimCreatedEvent;
+import me.ryanhamshire.GriefPrevention.events.ClaimDeletedEvent;
+import me.ryanhamshire.GriefPrevention.events.ClaimEvent;
+import me.ryanhamshire.GriefPrevention.events.ClaimModifiedEvent;
+import me.ryanhamshire.GriefPrevention.events.ClaimResizeEvent;
+import me.ryanhamshire.GriefPrevention.events.NewClaimCreated;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -93,9 +100,16 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
     }
 
     private class GriefPreventionUpdate implements Runnable {
+        boolean repeat = true;
+        
         public void run() {
-            if(!stop)
+            if(!stop) {
+                doUpdate = false;
                 updateClaims();
+                if (repeat) {
+                    getServer().getScheduler().scheduleSyncDelayedTask(DynmapGriefPreventionPlugin.this, new GriefPreventionUpdate(), updperiod);
+                }
+            }
         }
     }
     
@@ -109,10 +123,10 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
             v = "<div class=\"regioninfo\">"+infowindow+"</div>";
         v = v.replace("%owner%", claim.isAdminClaim()?ADMIN_ID:claim.getOwnerName());
         v = v.replace("%area%", Integer.toString(claim.getArea()));
-        ArrayList<String> builders = new ArrayList<String>();
-        ArrayList<String> containers = new ArrayList<String>();
-        ArrayList<String> accessors = new ArrayList<String>();
-        ArrayList<String> managers = new ArrayList<String>();
+        List<String> builders = new ArrayList<String>();
+        List<String> containers = new ArrayList<String>();
+        List<String> accessors = new ArrayList<String>();
+        List<String> managers = new ArrayList<String>();
         claim.getPermissions(builders, containers, accessors, managers);
         /* Build builders list */
         String accum = "";
@@ -278,9 +292,6 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         }
         /* And replace with new map */
         resareas = newmap;
-        
-        getServer().getScheduler().scheduleSyncDelayedTask(this, new GriefPreventionUpdate(), updperiod);
-        
     }
 
     private class OurServerListener implements Listener {
@@ -325,7 +336,38 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         }
     }
     private boolean reload = false;
+    private boolean doUpdate = false;
     
+    private class GPListener implements Listener {
+        private void doUpdate() {
+            if (!doUpdate) {
+                doUpdate = true;
+                GriefPreventionUpdate gp = new GriefPreventionUpdate();
+                gp.repeat = false;
+                getServer().getScheduler().scheduleSyncDelayedTask(DynmapGriefPreventionPlugin.this, gp, 5 * 20);
+            }
+        }
+        @EventHandler(priority=EventPriority.MONITOR)
+        public void onClaimCreatedEvent(ClaimCreatedEvent event) {
+            doUpdate();
+        }
+        @EventHandler(priority=EventPriority.MONITOR)
+        public void onClaimDeletedEvent(ClaimDeletedEvent event) {
+            doUpdate();
+        }
+        @EventHandler(priority=EventPriority.MONITOR)
+        public void onClaimModifiedEvent(ClaimModifiedEvent event) {
+            doUpdate();
+        }
+        @EventHandler(priority=EventPriority.MONITOR)
+        public void onClaimResizeEvent(ClaimResizeEvent event) {
+            doUpdate();
+        }
+        @EventHandler(priority=EventPriority.MONITOR)
+        public void onClaimAfterCreateEvent(ClaimAfterCreateEvent event) {
+            doUpdate();
+        }
+    }
     private void activate() {
         /* Now, get markers API */
         markerapi = api.getMarkerAPI();
@@ -396,7 +438,9 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         stop = false;
         
         getServer().getScheduler().scheduleSyncDelayedTask(this, new GriefPreventionUpdate(), 40);   /* First time is 2 seconds */
-        
+
+        getServer().getPluginManager().registerEvents(new GPListener(), this);        
+
         info("version " + this.getDescription().getVersion() + " is activated");
     }
 
