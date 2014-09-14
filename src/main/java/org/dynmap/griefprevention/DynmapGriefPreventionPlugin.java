@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -216,7 +217,8 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
             x[1] = l0.getX(); z[1] = l1.getZ() + 1.0;
             x[2] = l1.getX() + 1.0; z[2] = l1.getZ() + 1.0;
             x[3] = l1.getX() + 1.0; z[3] = l0.getZ();
-            String markerid = owner + "_" + wname + "_" + index;
+            UUID uuid = claim.getUUID();
+            String markerid = "GP_" + Long.toHexString(uuid.getMostSignificantBits()) + Long.toHexString(uuid.getLeastSignificantBits());
             AreaMarker m = resareas.remove(markerid); /* Existing area? */
             if(m == null) {
                 m = set.createAreaMarker(markerid, owner, false, wname, x, z, false);
