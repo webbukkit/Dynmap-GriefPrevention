@@ -12,29 +12,28 @@ layer:
   layerprio: 0
   # (optional) set minimum zoom level before layer is visible (0 = defalt, always visible)
   minzoom: 0
-  
-# Set true to show 3D volumes for zones  
+
+# Set true to show 3D volumes for zones
 use3dregions: false
 
 # Format for popup - substitute values for macros
-# 
-infowindow: '<div class=\"infowindow\">Claim Owner: <span style=\"font-weight:bold;\">%owner%</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>'
+#
+infowindow: 'Claim Owner: <strong>%owner%</strong><br/>Permission Trust: <strong>%managers%</strong><br/>Trust: <strong>%builders%</strong><br/>Container Trust: <strong>%containers%</strong><br/>Access Trust: <strong>%accessors%</strong>'
 
-adminclaiminfowindow: '<div class=\"infowindow\"><span style=\"font-weight:bold;\">Administrator Claim</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>'
-
+adminclaiminfowindow: '<strong>Administrator Claim</strong><br/>Permission Trust: <strong>%managers%</strong><br/>Trust: <strong>%builders%</strong><br/>Container Trust: <strong>%containers%</strong><br/>Access Trust: <strong>%accessors%</strong>'
 
 regionstyle:
-  strokeColor: "#FF0000"
+  strokeColor: "#FF9900"
   strokeOpacity: 0.8
   strokeWeight: 3
-  fillColor: "#FF0000"
+  fillColor: "#FF9900"
   fillOpacity: 0.35
-  
+
 # Optional list for defining the claims to be shown.  If list is non-empty, only claims matching one of the list strings are shown:
 # Values can include '<username>' (claims owned by given user), 'world:<worldid>' (all claims on a specific world),
 # '<worldid>/<username>' (claims owned by a given user on a given world).  Administrator claims are owned by 'administrator'.
 visibleregions: [ ]
-  
+
 # Optional list for restricting the claims shown.  If list is non-empty, any claims matching one of the list strings are not shown:
 # Values can include '<username>' (claims owned by given user), 'world:<worldid>' (all claims on a specific world),
 # '<worldid>/<username>' (claims owned by a given user on a given world).  Administrator claims are owned by 'administrator'.
@@ -45,4 +44,4 @@ ownerstyle:
   administrator:
     strokeColor: "#0000FF"
     fillColor: "#0000FF"
-    
+
