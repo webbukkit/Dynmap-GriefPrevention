@@ -32,8 +32,8 @@ import org.dynmap.markers.MarkerSet;
 public class DynmapGriefPreventionPlugin extends JavaPlugin {
 
     private static Logger log;
-    private static final String DEF_INFOWINDOW = "div class=\"infowindow\">Claim Owner: <span style=\"font-weight:bold;\">%owner%</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>";
-    private static final String DEF_ADMININFOWINDOW = "<div class=\"infowindow\"><span style=\"font-weight:bold;\">Administrator Claim</span><br/>Permission Trust: <span style=\"font-weight:bold;\">%managers%</span><br/>Trust: <span style=\"font-weight:bold;\">%builders%</span><br/>Container Trust: <span style=\"font-weight:bold;\">%containers%</span><br/>Access Trust: <span style=\"font-weight:bold;\">%accessors%</span></div>";
+    private static final String DEF_INFOWINDOW = "Claim Owner: <strong>%owner%</strong><br/>Permission Trust: <strong>%managers%</strong><br/>Trust: <strong>%builders%</strong><br/>Container Trust: <strong>%containers%</strong><br/>Access Trust: <strong>%accessors%</strong>";
+    private static final String DEF_ADMININFOWINDOW = "<strong>Administrator Claim</strong><br/>Permission Trust: <strong>%managers%</strong><br/>Trust: <strong>%builders%</strong><br/>Container Trust: <strong>%containers%</strong><br/>Access Trust: <strong>%accessors%</strong>";
     private static final String ADMIN_ID = "administrator";
     Plugin dynmap;
     DynmapAPI api;
@@ -268,10 +268,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         try {
             Field fld = DataStore.class.getDeclaredField("claims");
             fld.setAccessible(true);
-            Object o = fld.get(ds);
-            if (o instanceof ArrayList) {
-                claims = (ArrayList<Claim>) o;
-            }
+            claims = (ArrayList<Claim>) fld.get(ds);
         } catch (NoSuchFieldException e) {
         } catch (IllegalArgumentException e) {
         } catch (IllegalAccessException e) {
