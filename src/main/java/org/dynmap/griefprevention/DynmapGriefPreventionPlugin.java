@@ -15,6 +15,7 @@ import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
@@ -50,6 +51,8 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
     Set<String> hidden;
     boolean stop;
     int maxdepth;
+    private boolean reload = false;
+    private Map<String, AreaMarker> resareas = new HashMap<String, AreaMarker>();
 
     @Override
     public void onLoad() {
@@ -106,8 +109,6 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         }
     }
 
-    private Map<String, AreaMarker> resareas = new HashMap<String, AreaMarker>();
-
     private String formatInfoWindow(Claim claim, AreaMarker m) {
         String v;
         if (claim.isAdminClaim()) {
@@ -128,7 +129,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
             if (i > 0) {
                 accum += ", ";
             }
-            accum += builders.get(i);
+            accum += getPlayerName(builders.get(i));
         }
         v = v.replace("%builders%", accum);
         /* Build containers list */
@@ -137,7 +138,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
             if (i > 0) {
                 accum += ", ";
             }
-            accum += containers.get(i);
+            accum += getPlayerName(containers.get(i));
         }
         v = v.replace("%containers%", accum);
         /* Build accessors list */
@@ -146,7 +147,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
             if (i > 0) {
                 accum += ", ";
             }
-            accum += accessors.get(i);
+            accum += getPlayerName(accessors.get(i));
         }
         v = v.replace("%accessors%", accum);
         /* Build managers list */
@@ -155,10 +156,9 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
             if (i > 0) {
                 accum += ", ";
             }
-            accum += managers.get(i);
+            accum += getPlayerName(managers.get(i));
         }
         v = v.replace("%managers%", accum);
-
         return v;
     }
 
@@ -177,16 +177,14 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         return true;
     }
 
-    private void addStyle(String owner, String worldid, AreaMarker m, Claim claim) {
+    private void addStyle(String owner, AreaMarker m) {
         AreaStyle as = null;
-
         if (!ownerstyle.isEmpty()) {
             as = ownerstyle.get(owner.toLowerCase());
         }
         if (as == null) {
             as = defstyle;
         }
-
         int sc = 0xFF0000;
         int fc = 0xFF0000;
         try {
@@ -226,6 +224,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
             x[3] = l1.getX() + 1.0;
             z[3] = l0.getZ();
             UUID uuid = claim.ownerID;
+            // uuid could be null?
             String markerid = "GP_" + Long.toHexString(uuid.getMostSignificantBits()) + Long.toHexString(uuid.getLeastSignificantBits());
             AreaMarker m = resareas.remove(markerid); /* Existing area? */
 
@@ -245,14 +244,12 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
                 m.setRangeY(l1.getY() + 1.0, l0.getY());
             }
             /* Set line and fill properties */
-            addStyle(owner, wname, m, claim);
-
+            addStyle(owner, m);
             /* Build popup */
             String desc = formatInfoWindow(claim, m);
-
             m.setDescription(desc); /* Set popup */
-
             /* Add to map */
+
             newmap.put(markerid, m);
         }
     }
@@ -263,7 +260,6 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         Map<String, AreaMarker> newmap = new HashMap<String, AreaMarker>(); /* Build new map */
 
         DataStore ds = gp.dataStore;
-
         ArrayList<Claim> claims = null;
         try {
             Field fld = DataStore.class.getDeclaredField("claims");
@@ -280,13 +276,11 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
                 Claim claim = claims.get(i);
                 handleClaim(claim, newmap);
             }
-            int idx = sz;
             for (int i = 0; i < sz; i++) {
                 Claim claim = claims.get(i);
                 if ((claim.children != null) && (claim.children.size() > 0)) {
                     for (Claim children : claim.children) {
                         handleClaim(children, newmap);
-                        idx++;
                     }
                 }
             }
@@ -332,20 +326,17 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
             return;
         }
         gp = (GriefPrevention) p;
-
         getServer().getPluginManager().registerEvents(new OurServerListener(), this);
         /* If both enabled, activate */
         if (dynmap.isEnabled() && gp.isEnabled()) {
             activate();
         }
-
         try {
             MetricsLite ml = new MetricsLite(this);
             ml.start();
         } catch (IOException iox) {
         }
     }
-    private boolean reload = false;
 
     private void activate() {
         /* Now, get markers API */
@@ -369,8 +360,8 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         cfg.options().copyDefaults(true);   /* Load defaults, if needed */
 
         this.saveConfig();  /* Save updates, if needed */
-
         /* Now, add marker set for mobs (make it transient) */
+
         set = markerapi.getMarkerSet("griefprevention.markerset");
         if (set == null) {
             set = markerapi.createMarkerSet("griefprevention.markerset", cfg.getString("layer.name", "GriefPrevention"), null, false);
@@ -391,14 +382,12 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         infowindow = cfg.getString("infowindow", DEF_INFOWINDOW);
         admininfowindow = cfg.getString("adminclaiminfowindow", DEF_ADMININFOWINDOW);
         maxdepth = cfg.getInt("maxdepth", 16);
-
         /* Get style information */
         defstyle = new AreaStyle(cfg, "regionstyle");
         ownerstyle = new HashMap<String, AreaStyle>();
         ConfigurationSection sect = cfg.getConfigurationSection("ownerstyle");
         if (sect != null) {
             Set<String> ids = sect.getKeys(false);
-
             for (String id : ids) {
                 ownerstyle.put(id.toLowerCase(), new AreaStyle(cfg, "ownerstyle." + id, defstyle));
             }
@@ -411,7 +400,6 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         if (hid != null) {
             hidden = new HashSet<String>(hid);
         }
-
         /* Set up update job - based on periond */
         int per = cfg.getInt("update.period", 300);
         if (per < 15) {
@@ -419,7 +407,6 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         }
         updperiod = (long) (per * 20);
         stop = false;
-
         getServer().getScheduler().scheduleSyncDelayedTask(this, new GriefPreventionUpdate(), 40);   /* First time is 2 seconds */
 
         info("version " + this.getDescription().getVersion() + " is activated");
@@ -433,5 +420,15 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         }
         resareas.clear();
         stop = true;
+    }
+
+    private String getPlayerName(String id) {
+        UUID uuid = UUID.fromString(id);
+        OfflinePlayer ofp = this.getServer().getOfflinePlayer(uuid);
+        if (ofp != null) {
+            return ofp.getName();
+        } else {
+            return id;
+        }
     }
 }
