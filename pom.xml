@@ -71,7 +71,7 @@
   		<artifactId>GriefPrevention</artifactId>
   		<version>9.2</version>
   		<scope>system</scope>
-  		<systemPath>${project.basedir}/GriefPrevention-9.2.jar</systemPath>
+  		<systemPath>${project.basedir}/GriefPrevention-16.11.6.jar</systemPath>
   	</dependency>
   </dependencies>
 </project>
