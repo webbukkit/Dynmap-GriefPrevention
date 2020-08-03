@@ -42,6 +42,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
     FileConfiguration cfg;
     MarkerSet set;
     long updperiod;
+    boolean processChildren;
     boolean use3d;
     String infowindow;
     String admininfowindow;
@@ -247,9 +248,14 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         /* If claims, process them */
         if(claims != null) {
             int sz = claims.size();
-            for(int i = 0; i < sz; i++) {
+            for (int i = 0; i < sz; i++) {
                 Claim claim = claims.get(i);
                 handleClaim(i, claim, newmap);
+                if((claim.children != null) && (claim.children.size() > 0) && processChildren) {
+                    for(int j = 0; j < claim.children.size(); j++) {
+                        handleClaim(i, claim.children.get(j), newmap);
+                    }
+                }
             }
         }
         /* Now, review old map - anything left is gone */
@@ -358,6 +364,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         infowindow = cfg.getString("infowindow", DEF_INFOWINDOW);
         admininfowindow = cfg.getString("adminclaiminfowindow", DEF_ADMININFOWINDOW);
         maxdepth = cfg.getInt("maxdepth", 16);
+        processChildren = cfg.getBoolean("processSubclaims", true);
 
         /* Get style information */
         defstyle = new AreaStyle(cfg, "regionstyle");

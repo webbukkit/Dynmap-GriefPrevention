@@ -4,6 +4,9 @@ update:
   # Seconds between checks for claim updates
   period: 300
 
+# Should we process and show subdivided claims? Default is true
+processSubclaims: true
+
 layer:
   name: "GriefPrevention"
   # Make mobs layer hidden by default
