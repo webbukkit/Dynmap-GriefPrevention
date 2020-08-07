@@ -100,11 +100,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         public void run() {
             if(!stop) {
                 //doUpdate = false;
-                try {
-                    updateClaims();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                updateClaims();
                 if(repeat) {
                     // Run update task asynchronously
                     getServer().getScheduler().runTaskLaterAsynchronously(DynmapGriefPreventionPlugin.this, new GriefPreventionUpdate(), updperiod);
@@ -310,8 +306,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         try {
             MetricsLite ml = new MetricsLite(this);
             ml.start();
-        } catch (IOException iox) {
-        }
+        } catch (IOException iox) { }
     }
     private boolean reload = false;
     /*
