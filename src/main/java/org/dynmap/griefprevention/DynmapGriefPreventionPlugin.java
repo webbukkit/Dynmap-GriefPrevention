@@ -127,29 +127,69 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         /* Build builders list */
         StringBuilder accum = new StringBuilder();
         for(int i = 0; i < builders.size(); i++) {
-            if(i > 0) accum.append(", ");
-            accum.append(Bukkit.getOfflinePlayer(UUID.fromString(builders.get(i))).getName());
+            if(i==0 && !builders.get(i).equalsIgnoreCase("public"))
+                accum.append(Bukkit.getOfflinePlayer(UUID.fromString(builders.get(i))).getName());
+            else if(i==0 && builders.get(i).equalsIgnoreCase("public"))
+                accum.append("public");
+            else if(i > 0 && !builders.get(i).equalsIgnoreCase("public")) {
+                accum.append(", ");
+                accum.append(Bukkit.getOfflinePlayer(UUID.fromString(builders.get(i))).getName());
+            }
+            else if(i > 0 && builders.get(i).equalsIgnoreCase("public")) {
+                accum.append(", ");
+                accum.append("public");
+            }
         }
         v = v.replace("%builders%", accum.toString());
         /* Build containers list */
         accum = new StringBuilder();
         for(int i = 0; i < containers.size(); i++) {
-            if(i > 0) accum.append(", ");
-            accum.append(Bukkit.getOfflinePlayer(UUID.fromString(containers.get(i))).getName());
+            if(i==0 && !containers.get(i).equalsIgnoreCase("public"))
+                accum.append(Bukkit.getOfflinePlayer(UUID.fromString(containers.get(i))).getName());
+            else if(i==0 && containers.get(i).equalsIgnoreCase("public"))
+                accum.append("public");
+            else if(i > 0 && !containers.get(i).equalsIgnoreCase("public")) {
+                accum.append(", ");
+                accum.append(Bukkit.getOfflinePlayer(UUID.fromString(containers.get(i))).getName());
+            }
+            else if(i > 0 && containers.get(i).equalsIgnoreCase("public")) {
+                accum.append(", ");
+                accum.append("public");
+            }
         }
         v = v.replace("%containers%", accum.toString());
         /* Build accessors list */
         accum = new StringBuilder();
         for(int i = 0; i < accessors.size(); i++) {
-            if(i > 0) accum.append(", ");
-            accum.append(Bukkit.getOfflinePlayer(UUID.fromString(accessors.get(i))).getName());
+            if(i==0 && !accessors.get(i).equalsIgnoreCase("public"))
+                accum.append(Bukkit.getOfflinePlayer(UUID.fromString(accessors.get(i))).getName());
+            else if(i==0 && accessors.get(i).equalsIgnoreCase("public"))
+                accum.append("public");
+            else if(i > 0 && !accessors.get(i).equalsIgnoreCase("public")) {
+                accum.append(", ");
+                accum.append(Bukkit.getOfflinePlayer(UUID.fromString(accessors.get(i))).getName());
+            }
+            else if(i > 0 && accessors.get(i).equalsIgnoreCase("public")) {
+                accum.append(", ");
+                accum.append("public");
+            }
         }
         v = v.replace("%accessors%", accum.toString());
         /* Build managers list */
         accum = new StringBuilder();
         for(int i = 0; i < managers.size(); i++) {
-            if(i > 0) accum.append(", ");
-            accum.append(Bukkit.getOfflinePlayer(UUID.fromString(managers.get(i))).getName());
+            if(i==0 && !managers.get(i).equalsIgnoreCase("public"))
+                accum.append(Bukkit.getOfflinePlayer(UUID.fromString(managers.get(i))).getName());
+            else if(i==0 && managers.get(i).equalsIgnoreCase("public"))
+                accum.append("public");
+            else if(i > 0 && !managers.get(i).equalsIgnoreCase("public")) {
+                accum.append(", ");
+                accum.append(Bukkit.getOfflinePlayer(UUID.fromString(managers.get(i))).getName());
+            }
+            else if(i > 0 && managers.get(i).equalsIgnoreCase("public")) {
+                accum.append(", ");
+                accum.append("public");
+            }
         }
         v = v.replace("%managers%", accum.toString());
 
@@ -302,7 +342,6 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         /* If both enabled, activate */
         if(dynmap.isEnabled() && gp.isEnabled())
             activate();
-
         try {
             MetricsLite ml = new MetricsLite(this);
             ml.start();
