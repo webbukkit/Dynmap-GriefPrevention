@@ -1,19 +1,21 @@
 package org.dynmap.griefprevention;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.UUID;
+import java.util.Map;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -98,7 +100,11 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         public void run() {
             if(!stop) {
                 //doUpdate = false;
-                updateClaims();
+                try {
+                    updateClaims();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 if(repeat) {
                     // Run update task asynchronously
                     getServer().getScheduler().runTaskLaterAsynchronously(DynmapGriefPreventionPlugin.this, new GriefPreventionUpdate(), updperiod);
@@ -126,28 +132,28 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
         StringBuilder accum = new StringBuilder();
         for(int i = 0; i < builders.size(); i++) {
             if(i > 0) accum.append(", ");
-            accum.append(builders.get(i));
+            accum.append(Bukkit.getOfflinePlayer(UUID.fromString(builders.get(i))).getName());
         }
         v = v.replace("%builders%", accum.toString());
         /* Build containers list */
         accum = new StringBuilder();
         for(int i = 0; i < containers.size(); i++) {
             if(i > 0) accum.append(", ");
-            accum.append(containers.get(i));
+            accum.append(Bukkit.getOfflinePlayer(UUID.fromString(containers.get(i))).getName());
         }
         v = v.replace("%containers%", accum.toString());
         /* Build accessors list */
         accum = new StringBuilder();
         for(int i = 0; i < accessors.size(); i++) {
             if(i > 0) accum.append(", ");
-            accum.append(accessors.get(i));
+            accum.append(Bukkit.getOfflinePlayer(UUID.fromString(accessors.get(i))).getName());
         }
         v = v.replace("%accessors%", accum.toString());
         /* Build managers list */
         accum = new StringBuilder();
         for(int i = 0; i < managers.size(); i++) {
             if(i > 0) accum.append(", ");
-            accum.append(managers.get(i));
+            accum.append(Bukkit.getOfflinePlayer(UUID.fromString(managers.get(i))).getName());
         }
         v = v.replace("%managers%", accum.toString());
 
