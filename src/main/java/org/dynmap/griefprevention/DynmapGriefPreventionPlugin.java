@@ -136,8 +136,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
                 accum.append(Bukkit.getOfflinePlayer(UUID.fromString(builders.get(i))).getName());
             }
             else if(i > 0 && builders.get(i).equalsIgnoreCase("public")) {
-                accum.append(", ");
-                accum.append("public");
+                accum.append(", public");
             }
         }
         v = v.replace("%builders%", accum.toString());
@@ -153,8 +152,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
                 accum.append(Bukkit.getOfflinePlayer(UUID.fromString(containers.get(i))).getName());
             }
             else if(i > 0 && containers.get(i).equalsIgnoreCase("public")) {
-                accum.append(", ");
-                accum.append("public");
+                accum.append(", public");
             }
         }
         v = v.replace("%containers%", accum.toString());
@@ -170,8 +168,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
                 accum.append(Bukkit.getOfflinePlayer(UUID.fromString(accessors.get(i))).getName());
             }
             else if(i > 0 && accessors.get(i).equalsIgnoreCase("public")) {
-                accum.append(", ");
-                accum.append("public");
+                accum.append(", public");
             }
         }
         v = v.replace("%accessors%", accum.toString());
@@ -187,8 +184,7 @@ public class DynmapGriefPreventionPlugin extends JavaPlugin {
                 accum.append(Bukkit.getOfflinePlayer(UUID.fromString(managers.get(i))).getName());
             }
             else if(i > 0 && managers.get(i).equalsIgnoreCase("public")) {
-                accum.append(", ");
-                accum.append("public");
+                accum.append(", public");
             }
         }
         v = v.replace("%managers%", accum.toString());
